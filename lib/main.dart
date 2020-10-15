@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_first_app/widgets/transaction_list.dart';
 
+import './widgets/chart.dart';
+import './widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
 import './models/transaction.dart';
 
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
               headline6: TextStyle(fontFamily: 'OpenSans', fontSize: 22),
               bodyText1: TextStyle(fontSize: 20),
               bodyText2: TextStyle(fontSize: 16, color: Colors.grey),
+              button: TextStyle(color: Colors.white),
             ),
       ),
       home: MyHomePage(),
@@ -37,43 +39,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _transactions = [
-    Transaction(
-      id: 't1',
-      title: 'Groceries',
-      amount: 37.54,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Council Tax',
-      amount: 86.50,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't3',
-      title: 'Sky',
-      amount: 27,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't4',
-      title: 'Thames WaterLink',
-      amount: 32.3,
-      date: DateTime.now(),
-    ),
-  ];
+  final List<Transaction> _transactions = [];
 
-  void _addNewTransaction(String title, double amount) {
+  List<Transaction> get _recentTransactions {
+    return _transactions
+        .where(
+          (t) => t.date.isAfter(DateTime.now().subtract(Duration(days: 7))),
+        )
+        .toList();
+  }
+
+  void _addNewTransaction(String title, double amount, DateTime date) {
     final newTransaction = Transaction(
       id: DateTime.now().toString(),
       title: title,
       amount: amount,
-      date: DateTime.now(),
+      date: date,
     );
 
     setState(() {
       _transactions.add(newTransaction);
+    });
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((t) => t.id == id);
     });
   }
 
@@ -109,14 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                child: Text('CHART!'),
-                elevation: 5,
-              ),
-            ),
-            TransactionList(_transactions),
+            Chart(_recentTransactions),
+            TransactionList(_transactions, _deleteTransaction),
           ],
         ),
       ),
