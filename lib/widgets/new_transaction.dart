@@ -10,13 +10,33 @@ class NewTransaction extends StatefulWidget {
   NewTransaction(this.addTransaction);
 
   @override
-  _NewTransactionState createState() => _NewTransactionState();
+  _NewTransactionState createState() {
+    return _NewTransactionState();
+  }
 }
 
 class _NewTransactionState extends State<NewTransaction> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
   DateTime _selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    // initState content
+  }
+
+  @override
+  void didUpdateWidget(NewTransaction oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // didUpdateWidget content
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // dispose content
+  }
 
   void _submitData() {
     final enteredTitle = titleController.text;
